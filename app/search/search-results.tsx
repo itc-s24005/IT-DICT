@@ -1,50 +1,47 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import useSWR from "swr";
 import Link from "next/link";
-import styles from "./search.module.css";
 
-const termData: Record<string, { title: string; description: string }> = {
-  api: {
-    title: "API",
-    description: "アプリケーション同士が連携するための仕組み。",
-  },
-  dns: {
-    title: "DNS",
-    description: "ドメイン名とIPアドレスを紐付ける仕組み。",
-  },
-  devops: {
-    title: "DevOps",
-    description: "開発(Dev)と運用(Ops)の連携を強化するプラクティス。",
-  },
-};
+interface Term {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+}
 
-export default function SearchResults() {
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+export default function SearchPage() {
   const searchParams = useSearchParams();
-  const query = searchParams.get("query")?.toLowerCase() || "";
+  const query = searchParams.get("q") || "";
 
-  const filteredTerms = Object.entries(termData).filter(([_, value]) =>
-    value.title.toLowerCase().includes(query)
+  const { data, error } = useSWR<Term[]>(
+    query ? `/api/search?q=${query}` : null,
+    fetcher
+  );
+
+  // ✅ ローディング判定を isLoading の代わりに行う
+  if (error) return <p>検索中にエラーが発生しました。</p>;
+  if (!data || data.length === 0) return(
+    <main>
+      <h1>「{query}」の検索結果</h1>
+      <p>該当する用語は見つかりませんでした。</p>
+    </main>
   );
 
   return (
-    <main className={styles.main}>
-      <h1 className={styles.title}>「{query}」の検索結果</h1>
-
-      {filteredTerms.length > 0 ? (
-        <ul className={styles.list}>
-          {filteredTerms.map(([slug, value]) => (
-            <li key={slug} className={styles.item}>
-              <Link href={`/term/${slug}`} className={styles.link}>
-                <h2>{value.title}</h2>
-                <p>{value.description}</p>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>該当する用語が見つかりませんでした。</p>
-      )}
+    <main style={{ padding: "2rem" }}>
+      <h1>「{query}」の検索結果</h1>
+      <ul>
+        {data.map((term) => (
+          <li key={term.id}>
+            <Link href={`/term/${term.slug}`}>{term.title}</Link>
+            <p>{term.description}</p>
+          </li>
+        ))}
+      </ul>
     </main>
   );
 }
