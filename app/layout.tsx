@@ -36,16 +36,21 @@ export default function RootLayout({
               IT用語辞典
             </Link>
 
-            <form onSubmit={handleSubmit} className={styles.searchContainer}>
+            <form action="/search" method="get" style={{ display: "flex", gap: "8px" }}>
               <input
                 type="text"
-                placeholder="検索..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className={styles.searchBox}
+                name="q"
+                placeholder="用語を検索"
+                style={{
+                  padding: "8px",
+                  borderRadius: "4px",
+                  border: "1px solid #ccc",
+                  width: "200px",
+                }}
               />
-              <Search className={styles.searchIcon} />
+              <button type="submit">検索</button>
             </form>
+
           </header>
         )}
 
