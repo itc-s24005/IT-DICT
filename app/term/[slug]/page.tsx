@@ -8,12 +8,15 @@ export default async function TermDetail({
 }) {
   const { slug } = await params;
 
+  // ✅ URLエンコードされたスラッグを復号化
+  const decodedSlug = decodeURIComponent(slug);
+
   const data = await client.get<TermResponse>({
     endpoint: "terms",
-    queries: { filters: `slug[equals]${slug}` },
+    queries: { filters: `slug[equals]${decodedSlug}` },
   });
 
-  const term = data.contents?.[0];
+  const term = data.contents[0];
 
   if (!term) {
     return (
@@ -26,9 +29,8 @@ export default async function TermDetail({
   return (
     <main style={{ padding: "2rem" }}>
       <h1>{term.title}</h1>
-      <div
-        dangerouslySetInnerHTML={{ __html: term.description }}
-      />
+      {/* リッチエディタ対応 */}
+      <div dangerouslySetInnerHTML={{ __html: term.description }} />
     </main>
   );
 }
