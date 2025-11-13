@@ -1,19 +1,6 @@
 // app/page.tsx
 import { client } from "@/lib/microcms";
-
-interface Term {
-  id: string;
-  title: string;
-  slug: string;
-  description: string;
-}
-
-interface TermResponse {
-  contents: Term[];
-  totalCount: number;
-  offset: number;
-  limit: number;
-}
+import type { TermResponse } from "@/types/term";
 
 export default async function Home() {
   // ✅ 型を指定してデータを取得

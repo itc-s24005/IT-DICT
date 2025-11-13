@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation"; // ← usePathnameを追加
 import { useState } from "react";
-import { Search } from "lucide-react";
 import "./globals.css";
 import styles from "./layout.module.css";
 

@@ -38,7 +38,9 @@ export default function SearchPage() {
         {data.map((term) => (
           <li key={term.id}>
             <Link href={`/term/${term.slug}`}>{term.title}</Link>
-            <p>{term.description}</p>
+            <div
+              dangerouslySetInnerHTML={{ __html: term.description }}
+            />
           </li>
         ))}
       </ul>

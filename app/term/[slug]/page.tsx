@@ -1,11 +1,5 @@
 import { client } from "@/lib/microcms";
-
-interface Term {
-  id: string;
-  title: string;
-  slug: string;
-  description: string;
-}
+import type { TermResponse } from "@/types/term";
 
 export default async function TermDetail({
   params,
@@ -14,7 +8,7 @@ export default async function TermDetail({
 }) {
   const { slug } = await params;
 
-  const data = await client.get<{ contents: Term[] }>({
+  const data = await client.get<TermResponse>({
     endpoint: "terms",
     queries: { filters: `slug[equals]${slug}` },
   });
@@ -32,7 +26,9 @@ export default async function TermDetail({
   return (
     <main style={{ padding: "2rem" }}>
       <h1>{term.title}</h1>
-      <p>{term.description}</p>
+      <div
+        dangerouslySetInnerHTML={{ __html: term.description }}
+      />
     </main>
   );
 }
