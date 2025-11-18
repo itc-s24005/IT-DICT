@@ -1,49 +1,55 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import useSWR from "swr";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Term } from "@/types/term";
 
-interface Term {
-  id: string;
-  title: string;
-  slug: string;
-  description: string;
+function normalize(str: string) {
+  return str
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[ぁ-ん]/g, (ch) =>
+      String.fromCharCode(ch.charCodeAt(0) + 0x60)
+    );
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
-export default function SearchPage() {
+export default function SearchResults() {
   const searchParams = useSearchParams();
-  const query = searchParams.get("q") || "";
+  const query = searchParams.get("query") ?? "";
+  const [results, setResults] = useState<Term[]>([]);
 
-  const { data, error } = useSWR<Term[]>(
-    query ? `/api/search?q=${query}` : null,
-    fetcher
-  );
+  useEffect(() => {
+    async function run() {
+      const res = await fetch("/api/terms");
+      const all: Term[] = await res.json();
 
-  // ✅ ローディング判定を isLoading の代わりに行う
-  if (error) return <p>検索中にエラーが発生しました。</p>;
-  if (!data || data.length === 0) return(
-    <main>
-      <h1>「{query}」の検索結果</h1>
-      <p>該当する用語は見つかりませんでした。</p>
-    </main>
-  );
+      const normQuery = normalize(query);
+
+      setResults(
+        all.filter((item) =>
+          normalize(item.title).includes(normQuery)
+        )
+      );
+    }
+
+    run();
+  }, [query]);
 
   return (
-    <main style={{ padding: "2rem" }}>
+    <main>
       <h1>「{query}」の検索結果</h1>
-      <ul>
-        {data.map((term) => (
-          <li key={term.id}>
-            <Link href={`/term/${term.slug}`}>{term.title}</Link>
-            <div
-              dangerouslySetInnerHTML={{ __html: term.description }}
-            />
-          </li>
-        ))}
-      </ul>
+      {results.length === 0 ? (
+        <p>該当する用語は見つかりませんでした。</p>
+      ) : (
+        <ul>
+          {results.map((term) => (
+            <li key={term.id}>
+              <Link href={`/term/${term.slug}`}>{term.title}</Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </main>
   );
 }
