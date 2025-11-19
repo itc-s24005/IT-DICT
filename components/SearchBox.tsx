@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent, KeyboardEvent } from "react";
 import { Term } from "@/types/term";
 
 // ひらがな → カタカナ、英数字 → 小文字などノーマライズ
@@ -16,6 +16,7 @@ const normalize = (str: string) => {
 export default function SearchBox({ terms }: { terms: Term[] }) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Term[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const router = useRouter();
 
   // 🔍 入力変更 → 予測候補生成
@@ -23,24 +24,49 @@ export default function SearchBox({ terms }: { terms: Term[] }) {
     const value = e.target.value;
     setQuery(value);
 
-    // 空ならクリア
     if (!value.trim()) {
       setSuggestions([]);
+      setSelectedIndex(-1);
       return;
     }
 
     const normQuery = normalize(value);
 
-    // 🔍 normalized title に一致するもののみ
     const matched = terms.filter((term) =>
       normalize(term.title).includes(normQuery)
     );
 
-    // 最大5件だけ候補を表示
     setSuggestions(matched.slice(0, 5));
+    setSelectedIndex(-1);
   };
 
-  // 🔎 Enter or ボタンで検索実行
+  // 🔽 キーボード操作（↑↓ Enter）
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (suggestions.length === 0) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSelectedIndex((prev) =>
+        prev < suggestions.length - 1 ? prev + 1 : prev
+      );
+    }
+
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+    }
+
+    if (e.key === "Enter") {
+      if (selectedIndex >= 0) {
+        const term = suggestions[selectedIndex];
+        router.push(`/term/${term.slug}`);
+        setSuggestions([]);
+        setQuery("");
+      }
+    }
+  };
+
+  // 🔎 Enter / ボタンで検索実行
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
@@ -50,7 +76,6 @@ export default function SearchBox({ terms }: { terms: Term[] }) {
     }
   };
 
-  // 🔍 候補をクリック → その用語ページへ遷移
   const handleSelect = (term: Term) => {
     router.push(`/term/${term.slug}`);
     setQuery("");
@@ -65,6 +90,7 @@ export default function SearchBox({ terms }: { terms: Term[] }) {
           type="text"
           value={query}
           onChange={handleChange}
+          onKeyDown={handleKeyDown}
           placeholder="検索"
           className="border p-2 rounded w-full"
         />
@@ -79,10 +105,12 @@ export default function SearchBox({ terms }: { terms: Term[] }) {
       {/* 🔽 予測候補 */}
       {suggestions.length > 0 && (
         <ul className="absolute bg-white border rounded w-full mt-1 shadow">
-          {suggestions.map((term) => (
+          {suggestions.map((term, i) => (
             <li
               key={term.id}
-              className="p-2 hover:bg-gray-100 cursor-pointer"
+              className={`p-2 cursor-pointer ${
+                i === selectedIndex ? "bg-blue-200" : "hover:bg-gray-100"
+              }`}
               onClick={() => handleSelect(term)}
             >
               {term.title}

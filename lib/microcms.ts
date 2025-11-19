@@ -1,5 +1,5 @@
 import { createClient } from "microcms-js-sdk";
-import { TermResponse } from "@/types/term";
+import { Term, TermResponse } from "@/types/term";
 
 export const client = createClient({
   serviceDomain: process.env.MICROCMS_SERVICE_ID ?? "",
@@ -7,7 +7,7 @@ export const client = createClient({
 });
 
 // すべての用語を取得
-export async function getAllTerms() {
+export async function getAllTerms(): Promise<Term[]> {
   const data = await client.get<TermResponse>({
     endpoint: "terms",
     queries: { limit: 100 }, // ←★ これが必須！

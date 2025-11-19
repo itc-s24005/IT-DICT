@@ -9,4 +9,7 @@ export interface Term {
 
 export interface TermResponse {
   contents: Term[];
+  totalCount?: number;
+  offset?: number;
+  limit?: number;
 }

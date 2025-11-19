@@ -1,5 +1,7 @@
 import SearchBox from "@/components/SearchBox";
 import { getAllTerms } from "@/lib/microcms";
+import "./globals.css";
+
 
 interface LayoutProps {
   children: React.ReactNode;
