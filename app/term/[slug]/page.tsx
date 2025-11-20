@@ -1,9 +1,6 @@
-// app/term/[slug]/page.tsx
-import { client, getAllTerms } from "@/lib/microcms";
+import { client } from "@/lib/microcms";
 import type { TermResponse } from "@/types/term";
 import { linkify } from "@/lib/linkify";
-import type { Term } from "@/types/term";
-import styles from "./page.module.css";
 
 export default async function TermDetail({
   params,
@@ -13,37 +10,33 @@ export default async function TermDetail({
   const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
 
-  // microCMS で当該用語を取得（サーバー側 fetch）
-  const res = await client.get<TermResponse>({
+  const data = await client.get<TermResponse>({
     endpoint: "terms",
-    queries: { filters: `slug[equals]${decodedSlug}`, limit: 1 },
+    queries: { filters: `slug[equals]${decodedSlug}` },
   });
 
-  const term = res.contents?.[0];
+  const term = data.contents[0];
 
   if (!term) {
     return (
-      <main className={styles.main}>
+      <main style={{ padding: "2rem" }}>
         <h1>この用語は存在しません</h1>
       </main>
     );
   }
 
-  // 全用語を取得（リンク先の候補作成のため）
-  // getAllTerms は server-only で大きな数なら pagination を考慮してください
-  const allTerms = await getAllTerms(); // Term[]
+  // すべての用語を取得してリンク化に使う
+  const allTerms = await client.get<TermResponse>({
+    endpoint: "terms",
+    queries: { limit: 100 },
+  });
 
-  // linkify に description を渡して置換（HTML を返す）
-  // term.description が HTML (rich text) の想定
-  const linkedDescription = linkify(term.description || "", allTerms as Term[]);
+  const linkedDescription = linkify(term.description, allTerms.contents);
 
   return (
-    <main className={styles.main}>
+    <main style={{ padding: "2rem" }}>
       <h1>{term.title}</h1>
-      <div
-        // ここで安全に描画。microCMSの自分のコンテンツだけ使う想定
-        dangerouslySetInnerHTML={{ __html: linkedDescription }}
-      />
+      <div dangerouslySetInnerHTML={{ __html: linkedDescription }} />
     </main>
   );
 }
