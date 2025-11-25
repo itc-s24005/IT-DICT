@@ -1,6 +1,6 @@
 import SearchBox from "@/components/SearchBox";
 import { getAllTerms } from "@/lib/microcms";
-import "./globals.css";
+import "../globals.css";
 
 
 interface LayoutProps {
@@ -9,7 +9,7 @@ interface LayoutProps {
 
 export default async function RootLayout({ children }: LayoutProps) {
   const terms = await getAllTerms();
-
+  
   return (
     <html lang="ja">
       <body>
