@@ -2,11 +2,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   min-height: 80vh;
   text-align: center;
   padding: 2rem;
-  margin-top: 38px;
+  margin-top: 66px;
 }
 
 .title {
@@ -18,7 +17,7 @@
 .description {
   font-size: 1.1rem;
   color: #555;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
 }
 
 .searchContainer {
@@ -65,4 +64,5 @@
 
 .logo {
   width: 300px;
+  margin-bottom: 12px;
 }

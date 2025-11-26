@@ -62,7 +62,6 @@ export default function SearchResults() {
                     fontSize: "1.2rem",
                     fontWeight: "bold",
                     color: "blue",
-                    textDecoration: "underline",
                     cursor: "pointer",
                   }}
                 >

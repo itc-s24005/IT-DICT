@@ -1,22 +1,16 @@
 .header {
-  background: #1e293b; /* 濃いめの青グレー */
+  background: #005AB1; /* 濃いめの青グレー */
   padding: 16px 0;
-
 }
 
 .container {
   max-width: 1750px;
   margin: 0 50;
   padding: 0 16px;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-}
-
-.logo {
-  width: 150px;
 }
 
 .logo:hover {
