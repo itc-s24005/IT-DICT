@@ -6,6 +6,7 @@
   min-height: 80vh;
   text-align: center;
   padding: 2rem;
+  margin-top: 38px;
 }
 
 .title {
@@ -28,7 +29,7 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   width: 100%;
-  max-width: 400px;
+  max-width: 448px;
   transition: box-shadow 0.2s ease;
 }
 
@@ -40,7 +41,7 @@
   flex: 1;
   border: none;
   outline: none;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 0.875rem;
   font-size: 1rem;
 }
 
@@ -56,4 +57,12 @@
 
 .searchButton:hover {
   background-color: #0057c2;
+}
+
+.io {
+  width: 100%;
+}
+
+.logo {
+  width: 300px;
 }

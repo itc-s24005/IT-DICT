@@ -1,0 +1,24 @@
+/* 段落の調整 */
+.prose p {
+  margin-bottom: 0.1em;
+  line-height: 1.8;
+}
+
+/* リンクの見た目 */
+.term-link {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.term-link:hover {
+  color: #1e40af;
+}
+
+/* カード内部のテキスト */
+.prose {
+  font-size: 1.3rem;
+}
+
+h1 {
+    font-size: 2.7rem;
+}

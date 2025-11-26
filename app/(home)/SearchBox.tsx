@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState, ChangeEvent, FormEvent, KeyboardEvent } from "react";
 import { Term } from "@/types/term";
-import "../app/globals.css";
-import styles from "../app/page.module.css";
+import styles from "../page.module.css";
+
 
 // ひらがな → カタカナ、英数字 → 小文字などノーマライズ
 const normalize = (str: string) => {
@@ -85,7 +85,7 @@ export default function SearchBox({ terms }: { terms: Term[] }) {
   };
 
   return (
-    <div className="relative w-full max-w-md">
+    <div className={styles.io}>
       {/* 🔎 Enter / ボタン検索 */}
       <form onSubmit={handleSubmit} className={styles.searchContainer}>
         <input
@@ -93,7 +93,7 @@ export default function SearchBox({ terms }: { terms: Term[] }) {
           value={query}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          placeholder="検索"
+          placeholder="調べたい用語を入力"
           className={styles.searchBox}
         />
         <button
@@ -106,7 +106,7 @@ export default function SearchBox({ terms }: { terms: Term[] }) {
 
       {/* 🔽 予測候補 */}
       {suggestions.length > 0 && (
-        <ul className="absolute bg-white rounded w-full mt-1 shadow">
+        <ul className="text-left absolute bg-white rounded w-full mt-1 shadow">
           {suggestions.map((term, i) => (
             <li
               key={term.id}

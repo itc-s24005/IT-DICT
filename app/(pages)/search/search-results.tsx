@@ -47,16 +47,16 @@ export default function SearchResults() {
   }, [query]);
 
   return (
-    <main style={{ padding: "2rem" }}>
-      <h1>「{query}」の検索結果</h1>
+    <main className="max-w-5xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6">「{query}」の検索結果</h1>
 
       {results.length === 0 ? (
-        <p>該当する用語は見つかりませんでした。</p>
+        <p className="text-gray-600">該当する用語は見つかりませんでした。</p>
       ) : (
-        <ul style={{ listStyle: "none", paddingLeft: 0 }}>
+        <ul className="space-y-4">
           {results.map((term) => (
-            <li key={term.id} style={{ marginBottom: "1.5rem" }}>
-              <Link href={`/term/${term.slug}`}>
+            <li key={term.id} className="p-4 shadow-md border-gray-200 rounded-lg hover:bg-gray-50 transition">
+              <Link href={`/term/${term.slug}`} className="text-xl font-semibold text-blue-600">
                 <h2
                   style={{
                     fontSize: "1.2rem",
@@ -71,7 +71,7 @@ export default function SearchResults() {
               </Link>
 
               {/* 説明文の抜粋を表示 */}
-              <p>{excerpt(term.description, 85)}</p>
+              <p  className="text-gray-700 mt-2">{excerpt(term.description, 85)}</p>
             </li>
           ))}
         </ul>
