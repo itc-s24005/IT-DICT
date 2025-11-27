@@ -6,16 +6,11 @@ export const client = createClient({
   apiKey: process.env.MICROCMS_API_KEY ?? "",
 });
 
-// すべての用語を取得 (キャッシュしない)
+// すべての用語を取得
 export async function getAllTerms(): Promise<Term[]> {
   const data = await client.get<TermResponse>({
     endpoint: "terms",
-    queries: {
-      limit: 100,
-    },
-    customRequestInit: {
-      cache: "no-store", // ←★ これを追加！
-    }
+    queries: { limit: 100 }, // ←★ これが必須！
   });
 
   return data.contents;
